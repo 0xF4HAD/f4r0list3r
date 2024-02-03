@@ -1,0 +1,255 @@
+#!/bin/bash
+
+echo -e "\e[1;31m"
+cat << "EOF"
+
+  █████▒▄▄▄       ██▀███   ▒█████   ██▓     ██▓  ██████ ▄▄▄█████▓▓█████  ██▀███  
+▓██   ▒▒████▄    ▓██ ▒ ██▒▒██▒  ██▒▓██▒    ▓██▒▒██    ▒ ▓  ██▒ ▓▒▓█   ▀ ▓██ ▒ ██▒
+▒████ ░▒██  ▀█▄  ▓██ ░▄█ ▒▒██░  ██▒▒██░    ▒██▒░ ▓██▄   ▒ ▓██░ ▒░▒███   ▓██ ░▄█ ▒
+░▓█▒  ░░██▄▄▄▄██ ▒██▀▀█▄  ▒██   ██░▒██░    ░██░  ▒   ██▒░ ▓██▓ ░ ▒▓█  ▄ ▒██▀▀█▄  
+░▒█░    ▓█   ▓██▒░██▓ ▒██▒░ ████▓▒░░██████▒░██░▒██████▒▒  ▒██▒ ░ ░▒████▒░██▓ ▒██▒
+ ▒ ░    ▒▒   ▓▒█░░ ▒▓ ░▒▓░░ ▒░▒░▒░ ░ ▒░▓  ░░▓  ▒ ▒▓▒ ▒ ░  ▒ ░░   ░░ ▒░ ░░ ▒▓ ░▒▓░
+ ░       ▒   ▒▒ ░  ░▒ ░ ▒░  ░ ▒ ▒░ ░ ░ ▒  ░ ▒ ░░ ░▒  ░ ░    ░     ░ ░  ░  ░▒ ░ ▒░
+ ░ ░     ░   ▒     ░░   ░ ░ ░ ░ ▒    ░ ░    ▒ ░░  ░  ░    ░         ░     ░░   ░ 
+             ░  ░   ░         ░ ░      ░  ░ ░        ░              ░  ░   ░        
+EOF
+echo -e "\e[0m"
+echo -e "\e[1;32m Welcome to f4r0list3r - Make Your Recon Faster & Easy!\e[0m"
+#    https://github.com/zan8in/afrog/
+#    https://github.com/tomnomnom/assetfinder
+#    https://github.com/owasp-amass/amass
+#    assetfinder & Sublist3r & subfinder & Crt.sh & amass
+#    waybackurls
+#    whatweb
+#    https://github.com/haccer/subjack
+#    https://github.com/PentestPad/subzy
+#    https://github.com/devanshbatham/ParamSpider
+#    https://github.com/Emoe/kxss
+
+
+  
+
+    url=$1 
+    
+     
+
+    if [ ! -x "$(command -v assetfinder)" ]; then
+        echo -e "\e[1;31m [-] assetfinder required to run script... \e[0m"
+        exit 1
+    fi
+    
+    if [ ! -x "$(command -v amass)" ]; then
+        echo -e "\e[1;31m [-] amass required to run script.. \e[0m"
+        exit 1
+    fi
+    
+    if [ ! -x "$(command -v sublist3r)" ]; then
+        echo -e "\e[1;31m [-] sublist3r required to run script.. \e[0m"
+        exit 1
+    fi
+
+    # if [ ! -x "$(find / -type f -name 'EyeWitness')" ];then
+    #     echo -e "\e[1;31m [-] Eyewitness required to run script.. \e[0m"
+    #     exit 1
+    # fi
+ 
+    if [ ! -x "$(command -v httprobe)" ]; then
+        echo -e "\e[1;31m [-] httprobe required to run script.. \e[0m"
+        exit 1
+    fi
+    
+    if [ ! -x "$(command -v waybackurls)" ]; then
+        echo -e  "\e[1;31m [-] waybackurls required to run script.. \e[0m"
+        exit 1
+    fi
+    
+    if [ ! -x "$(command -v whatweb)" ]; then
+        echo -e "\e[1;31m [-] whatweb required to run script.. \e[0m"
+        exit 1
+    fi
+
+# Making Dir
+
+    if [ ! -d "$url" ];then
+        mkdir $url
+    fi
+    if [ ! -d "$url/recon" ];then
+        mkdir $url/recon
+    fi
+    if [ ! -d "$url/recon/3rd-lvls" ];then
+        mkdir $url/recon/3rd-lvls
+    fi
+    if [ ! -d "$url/recon/scans" ];then
+        mkdir $url/recon/scans
+    fi
+    if [ ! -d "$url/recon/httprobe" ];then
+        mkdir $url/recon/httprobe
+    fi
+    if [ ! -d "$url/recon/potential_takeovers" ];then
+         mkdir $url/recon/potential_takeovers
+    fi
+    if [ ! -d "$url/recon/wayback" ];then
+        mkdir $url/recon/wayback
+    fi
+    if [ ! -d "$url/recon/wayback/params" ];then
+        mkdir $url/recon/wayback/params
+    fi
+    if [ ! -d "$url/recon/wayback/extensions" ];then
+        mkdir $url/recon/wayback/extensions
+    fi
+    if [ ! -d "$url/recon/whatweb" ];then
+        mkdir $url/recon/whatweb
+    fi
+    if [ ! -d "$url/recon/VulnScan" ];then
+        mkdir $url/recon/VulnScan
+    fi
+    if [ ! -f "$url/recon/httprobe/alive.txt" ];then
+        touch $url/recon/httprobe/alive.txt
+    fi
+    if [ ! -f "$url/recon/final.txt" ];then
+        touch $url/recon/final.txt
+    fi
+    if [ ! -f "$url/recon/3rd-lvl" ];then
+        touch $url/recon/3rd-lvl-domains.txt
+    fi
+    
+    
+ # Harvesting subdomains (assetfinder & Sublist3r & subfinder & Crt.sh & amass)
+
+    
+    echo -e "\e[1;33m[++] Harvesting subdomains with assetfinder...\e[0m"
+    assetfinder --subs-only $url | grep '.$url' | sort -u >> $url/recon/final1.txt
+
+    echo -e "\e[1;33m[++] Harvesting subdomains with Sublist3r...\e[0m"
+    sublist3r  -d $url | grep '.$url' | sort -u >> $url/recon/final1.txt
+
+    echo -e "\e[1;33m[++] Harvesting subdomains with subfinder...\e[0m"
+    subfinder -d $url | grep '.$url' | sort -u >> $url/recon/final1.txt
+    
+    echo -e "\e[1;33m[++] Double checking for subdomains with Amass an& Crt.sh ...\e[0m"
+    #amass enum -d $url | tee -a $url/recon/final1.txt
+    curl -s https://crt.sh/\?q\=%25.$url\&output\=json | jq -r '.[].name_value' | sed 's/\*\.//g' | sort -u >> $url/recon/final1.txt
+    sort -u $url/recon/final1.txt >> $url/recon/final.txt
+    rm $url/recon/final1.txt
+    
+ # Compiling 3rd lvl domains
+
+    #echo "[+] Compiling 3rd lvl domains..."
+    #cat $url/recon/final.txt | grep -Po '(\w+\.\w+\.\w+)$' | sort -u >> $url/recon/3rd-lvl-domains.txt
+    #write in line to recursively run thru final.txt
+    #for line in $(cat $url/recon/3rd-lvl-domains.txt);do echo $line | sort -u | tee -a $url/recon/final.txt;done
+    
+    #echo "[+] Harvesting full 3rd lvl domains with sublist3r..."
+    #for domain in $(cat $url/recon/3rd-lvl-domains.txt);do sublist3r -d $domain -o $url/recon/3rd-lvls/$domain.txt;done
+ 
+# Probing for alive domains
+
+    echo -e "\e[1;33m[++] Probing for alive domains...\e[0m"
+    cat $url/recon/final.txt | sort -u | httprobe -s -p https:443 | sed 's~https\?://~~; s~:443~~'  >> $url/recon/httprobe/alive.txt
+
+# Probing for alive domains
+
+    echo -e "\e[1;33m[++] Paramspider Mining URLs from dark corners of Web Archives...\e[0m"
+    # for URL in $url/recon/httprobe/alive.txt; do (paramspider -d "${URL}");done
+    paramspider -l $url/recon/httprobe/alive.txt
+    
+
+#  Checking for possible subdomain takeover (subjack & subzy)
+
+    echo -e "\e[1;33m[++] Checking for possible subdomain takeover...\e[0m"
+    if [ ! -f "$url/recon/potential_takeovers/domains.txt" ];then
+        touch $url/recon/potential_takeovers/domains.txt
+    fi
+    if [ ! -f "$url/recon/potential_takeovers/potential_takeovers1.txt" ];then
+        touch $url/recon/potential_takeovers/potential_takeovers1.txt
+    fi
+    for line in $(cat $url/recon/final.txt);do echo $line |sort -u >> $url/recon/potential_takeovers/domains.txt;done
+    subjack -w $url/recon/httprobe/alive.txt -t 100 -timeout 30 -ssl -c /usr/share/subjack/fingerprints.json -v 3  >> $url/recon/potential_takeovers/potential_takeovers1.txt
+    subzy run --targets $url/recon/httprobe/alive.txt  >> $url/recon/potential_takeovers/potential_takeovers1.txt
+    sort -u $url/recon/potential_takeovers/potential_takeovers1.txt >> $url/recon/potential_takeovers/potential_takeovers.txt
+    rm $url/recon/potential_takeovers/potential_takeovers1.txt
+
+# Running whatweb on compiled domains 
+
+    echo -e "\e[1;33m[++] Running whatweb on compiled domains...\e[0m"
+    for domain in $(cat $url/recon/httprobe/alive.txt);do
+        if [ ! -d  "$url/recon/whatweb/$domain" ];then
+            mkdir $url/recon/whatweb/$domain
+        fi
+        if [ ! -d "$url/recon/whatweb/$domain/output.txt" ];then
+            touch $url/recon/whatweb/$domain/output.txt
+        fi
+        if [ ! -d "$url/recon/whaweb/$domain/plugins.txt" ];then
+            touch $url/recon/whatweb/$domain/plugins.txt
+        fi
+        echo -e "\e[1;33m[**] Pulling plugins data on $domain $(date +'%Y-%m-%d %T') \e[0m"
+        whatweb --info-plugins -t 50 -v $domain >> $url/recon/whatweb/$domain/plugins.txt; sleep 3
+        echo -e "\e[1;33m[**] Running whatweb on $domain $(date +'%Y-%m-%d %T')\e[0m"
+        whatweb -t 50 -v $domain >> $url/recon/whatweb/$domain/output.txt; sleep 1
+    done
+
+ # Scraping wayback data
+
+    echo -e "\e[1;33m[++] Scraping wayback data...\e[0m"
+    cat $url/recon/final.txt | waybackurls | tee -a  $url/recon/wayback/wayback_output1.txt
+    sort -u $url/recon/wayback/wayback_output1.txt >> $url/recon/wayback/wayback_output.txt
+    rm $url/recon/wayback/wayback_output1.txt
+    
+    echo -e "\e[1;33m[++] Pulling and compiling all possible params found in wayback data...\e[0m"
+    cat $url/recon/wayback/wayback_output.txt | grep '?*=' | cut -d '=' -f 1 | sort -u >> $url/recon/wayback/params/wayback_params.txt
+    for line in $(cat $url/recon/wayback/params/wayback_params.txt);do echo $line'=';done
+    
+    echo -e "\e[1;33m[++] Pulling and compiling js/php/aspx/jsp/json files from wayback output...\e[0m"
+    for line in $(cat $url/recon/wayback/wayback_output.txt);do
+        ext="${line##*.}"
+        if [[ "$ext" == "js" ]]; then
+            echo $line | sort -u | tee -a  $url/recon/wayback/extensions/js.txt
+        fi
+        if [[ "$ext" == "html" ]];then
+            echo $line | sort -u | tee -a $url/recon/wayback/extensions/jsp.txt
+        fi
+        if [[ "$ext" == "json" ]];then
+            echo $line | sort -u | tee -a $url/recon/wayback/extensions/json.txt
+        fi
+        if [[ "$ext" == "php" ]];then
+            echo $line | sort -u | tee -a $url/recon/wayback/extensions/php.txt
+        fi
+        if [[ "$ext" == "aspx" ]];then
+            echo $line | sort -u | tee -a $url/recon/wayback/extensions/aspx.txt
+        fi
+    done
+    
+
+# Scanning for Open Ports using nmap
+
+    echo -e "\e[1;33m[++] Scanning for open ports...\e[0m"
+    nmap -iL $url/recon/httprobe/alive.txt -T4 -oA $url/recon/scans/scanned.txt
+
+# Harvesting Subdomains,IP & Servers with Knockpy
+
+    echo -e "\e[1;33m[++] Harvesting Subdomains,IP & Servers with Knockpy...\e[0m"
+    knockpy  $url >> $url/recon/knockpy.txt
+    cat $url/recon/knockpy.txt | grep $1 >> $url/recon/knockpy_url.txt
+    rm $url/recon/knockpy.txt 
+
+# Harvesting subdomains with Gau
+
+    echo -e "\e[1;33m[++] Harvesting subdomains with Gau...\e[0m"
+    gau $url --subs --fc 404 --providers wayback   >> $url/recon/gau_urls.txt
+    cat $url/recon/gau_urls.txt | grep $1 >> $url/recon/gau_urlsfinal.txt
+    rm $url/recon/gau_urls.txt
+
+# Eyewitness 
+
+    # echo -e "\e[1;33m[++] Running eyewitness against all compiled domains...\e[0m"
+    # eyewitness=$(find / -type f -name 'EyeWitness.py')
+    # eyewitness --web -f $url/recon/httprobe/alive.txt -d $url/recon/eyewitness --resolve --no-prompt
+
+
+# Checking for vulnerabilitys on alive subdomains (afrog)
+
+    echo -e "\e[1;33m[++] Checking for vulnerabilitys on alive subdomains ...\e[0m"
+    if [ ! -f "$url/recon/VulnScan" ];then
+        touch $url/recon/VulnScan/vulnscan_domains.txt
+    fi
+    afrog -T $url/recon/httprobe/alive.txt -S high,critical   >> $url/recon/VulnScan/vulnscan_domains.txt
