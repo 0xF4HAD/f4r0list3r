@@ -25,6 +25,7 @@ echo -e "\e[1;32m Welcome to f4r0list3r - Make Your Recon Faster & Easy!\e[0m"
 #    https://github.com/PentestPad/subzy
 #    https://github.com/devanshbatham/ParamSpider
 #    https://github.com/Emoe/kxss
+#    https://github.com/projectdiscovery/httpx?tab=readme-ov-file
 
 
   
@@ -118,17 +119,17 @@ echo -e "\e[1;32m Welcome to f4r0list3r - Make Your Recon Faster & Easy!\e[0m"
 
     
     echo -e "\e[1;33m[++] Harvesting subdomains with assetfinder...\e[0m"
-    assetfinder --subs-only $url | grep '.$url' | sort -u >> $url/recon/final1.txt
+    assetfinder --subs-only $url  >> $url/recon/final1.txt
 
     echo -e "\e[1;33m[++] Harvesting subdomains with Sublist3r...\e[0m"
-    sublist3r  -d $url | grep '.$url' | sort -u >> $url/recon/final1.txt
+    sublist3r  -d $url >> $url/recon/final1.txt
 
     echo -e "\e[1;33m[++] Harvesting subdomains with subfinder...\e[0m"
-    subfinder -d $url | grep '.$url' | sort -u >> $url/recon/final1.txt
+    subfinder -d $url  >> $url/recon/final1.txt
     
     echo -e "\e[1;33m[++] Double checking for subdomains with Amass an& Crt.sh ...\e[0m"
     #amass enum -d $url | tee -a $url/recon/final1.txt
-    curl -s https://crt.sh/\?q\=%25.$url\&output\=json | jq -r '.[].name_value' | sed 's/\*\.//g' | sort -u >> $url/recon/final1.txt
+    curl -s https://crt.sh/\?q\=%25.$url\&output\=json | jq -r '.[].name_value' | sed 's/\*\.//g'  >> $url/recon/final1.txt
     sort -u $url/recon/final1.txt >> $url/recon/final.txt
     rm $url/recon/final1.txt
     
@@ -146,6 +147,7 @@ echo -e "\e[1;32m Welcome to f4r0list3r - Make Your Recon Faster & Easy!\e[0m"
 
     echo -e "\e[1;33m[++] Probing for alive domains...\e[0m"
     cat $url/recon/final.txt | sort -u | httprobe -s -p https:443 | sed 's~https\?://~~; s~:443~~'  >> $url/recon/httprobe/alive.txt
+    cat $url/recon/final.txt | httpx -mc 200 | sort -u  >> $url/recon/httprobe/alive.txt
 
 # Probing for alive domains
 
@@ -228,9 +230,8 @@ echo -e "\e[1;32m Welcome to f4r0list3r - Make Your Recon Faster & Easy!\e[0m"
 # Harvesting Subdomains,IP & Servers with Knockpy
 
     echo -e "\e[1;33m[++] Harvesting Subdomains,IP & Servers with Knockpy...\e[0m"
-    knockpy  $url >> $url/recon/knockpy.txt
-    cat $url/recon/knockpy.txt | grep $1 >> $url/recon/knockpy_url.txt
-    rm $url/recon/knockpy.txt 
+    knockpy  $url 
+    
 
 # Harvesting subdomains with Gau
 
