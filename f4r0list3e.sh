@@ -135,11 +135,11 @@ echo -e "\e[1;32m Welcome to f4r0list3r - Make Your Recon Faster & Easy!\e[0m"
     #amass enum -passive -d $url | tee -a $url/Subdomains/amass.txt
     curl -s https://crt.sh/\?q\=%25.$url\&output\=json | jq -r '.[].name_value' | sed 's/\*\.//g' | sort -u >> $url/recon/Subdomains/crt.txt
     # sort -u $url/recon/final1.txt >> $url/recon/final.txt
-    cat $url/recon/Subdomains/assetfinder.txt $url/recon/Subdomains/sublist3r.txt $url/recon/Subdomains/subfinder.txt $url/recon/Subdomains/crt.txt | anew $url/Subdomains/final.txt
+    cat $url/recon/Subdomains/assetfinder.txt $url/recon/Subdomains/sublist3r.txt $url/recon/Subdomains/subfinder.txt $url/recon/Subdomains/crt.txt | anew $url/recon/Subdomains/final.txt
     
 # Searching for CNAME Records with nslookup 
     echo -e "$YELLOW[+] Searching for CNAME Records With nslookup ...$RESET"
-    input_file="$url/Subdomains/final.txt"
+    input_file="$url/recon/Subdomains/final.txt"
 
 # Check if the input file exists
     if [ ! -f "$input_file" ]; then
@@ -179,8 +179,8 @@ echo -e "\e[1;32m Welcome to f4r0list3r - Make Your Recon Faster & Easy!\e[0m"
 # Probing for alive domains
 
     echo -e "\e[1;33m[++] Probing for alive domains...\e[0m"
-    cat $url/recon/final.txt | sort -u | httprobe -s -p https:443 | sed 's~https\?://~~; s~:443~~'  >> $url/recon/httprobe/alive.txt
-    cat $url/recon/final.txt | httpx -mc 200 | sort -u  >> $url/recon/httprobe/alive.txt
+    cat $url/recon/Subdomains/final.txt | sort -u | httprobe -s -p https:443 | sed 's~https\?://~~; s~:443~~'  >> $url/recon/httprobe/alive.txt
+    cat $url/recon/Subdomains/final.txt | httpx -mc 200 | sort -u  >> $url/recon/httprobe/alive.txt
 
 # Probing for alive domains
 
@@ -198,7 +198,7 @@ echo -e "\e[1;32m Welcome to f4r0list3r - Make Your Recon Faster & Easy!\e[0m"
     if [ ! -f "$url/recon/potential_takeovers/potential_takeovers1.txt" ];then
         touch $url/recon/potential_takeovers/potential_takeovers1.txt
     fi
-    for line in $(cat $url/recon/final.txt);do echo $line |sort -u >> $url/recon/potential_takeovers/domains.txt;done
+    for line in $(cat $url/recon/Subdomains/final.txt);do echo $line |sort -u >> $url/recon/potential_takeovers/domains.txt;done
     subjack -w $url/recon/httprobe/alive.txt -t 100 -timeout 30 -ssl -c /usr/share/subjack/fingerprints.json -v 3  >> $url/recon/potential_takeovers/potential_takeovers1.txt
     subzy run --targets $url/recon/httprobe/alive.txt  >> $url/recon/potential_takeovers/potential_takeovers1.txt
     sort -u $url/recon/potential_takeovers/potential_takeovers1.txt >> $url/recon/potential_takeovers/potential_takeovers.txt
