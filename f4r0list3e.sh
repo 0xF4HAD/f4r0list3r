@@ -31,6 +31,8 @@ echo -e "\e[1;32m Welcome to f4r0list3r - Make Your Recon Faster & Easy!\e[0m"
   
 
     url=$1 
+    RESET="\e[0m"
+    YELLOW="\e[1;33m"
     
      
 
@@ -74,7 +76,7 @@ echo -e "\e[1;32m Welcome to f4r0list3r - Make Your Recon Faster & Easy!\e[0m"
     if [ ! -d "$url" ];then
         mkdir $url
     fi
-    if [ ! -d "$url/recon" ];then $url/Subdomains/
+    if [ ! -d "$url/recon" ];then 
         mkdir $url/recon
     fi
     if [ ! -d "$url/recon/Subdomains/" ];then 
@@ -120,21 +122,50 @@ echo -e "\e[1;32m Welcome to f4r0list3r - Make Your Recon Faster & Easy!\e[0m"
     
  # Harvesting subdomains (assetfinder & Sublist3r & subfinder & Crt.sh & amass)
 
-    echo "$YELLOW[+] Harvesting subdomains with assetfinder...$RESET"
+    echo -e "$YELLOW[+] Harvesting subdomains with assetfinder...$RESET"
     assetfinder --subs-only $url >> $url/recon/Subdomains/assetfinder.txt
 
-    echo "$YELLOW[+] Harvesting subdomains with Sublist3r...$RESET"
+    echo -e "$YELLOW[+] Harvesting subdomains with Sublist3r...$RESET"
     sublist3r  -d $url  >> $url/recon/Subdomains/sublist3r.txt
 
-    echo "$YELLOW[+] Harvesting subdomains with subfinder...$RESET"
+    echo -e "$YELLOW[+] Harvesting subdomains with subfinder...$RESET"
     subfinder -d $url  >> $url/recon/Subdomains/subfinder.txt
     
-    echo "$YELLOW[+] Double checking for subdomains with amass and Crt.sh ...$RESET"
+    echo -e "$YELLOW[+] Double checking for subdomains with amass and Crt.sh ...$RESET"
     #amass enum -passive -d $url | tee -a $url/Subdomains/amass.txt
     curl -s https://crt.sh/\?q\=%25.$url\&output\=json | jq -r '.[].name_value' | sed 's/\*\.//g' | sort -u >> $url/Subdomains/crt.txt
     # sort -u $url/recon/final1.txt >> $url/recon/final.txt
     cat $url/recon/Subdomains/assetfinder.txt $url/recon/Subdomains/sublist3r.txt $url/recon/Subdomains/subfinder.txt $url/recon/Subdomains/crt.txt | anew $url/Subdomains/final.txt
     
+# Searching for CNAME Records with nslookup 
+    echo -e "$YELLOW[+] Searching for CNAME Records With nslookup ...$RESET"
+    input_file="$url/Subdomains/final.txt"
+
+# Check if the input file exists
+    if [ ! -f "$input_file" ]; then
+        echo "Error: Input file '$input_file' not found."
+        exit 1
+    fi
+# Output file to store nslookup results
+    output_file="nslookup_results.txt"
+
+# Clear the output file
+    > "$output_file"
+
+# Loop through each domain in the input file
+    while IFS= read -r domain; do
+        echo -e "\e[1;32m Performing nslookup for:\e[0m  $domain "
+        
+        # Perform nslookup for the domain and append the result to the output file
+        echo -e "\e[1;33m Domain: $domain \e[0m" >> "$output_file"
+        nslookup -type=cname "$domain" >> "$output_file"
+        echo "" >> "$output_file"  # Add an empty line for readability
+    done < "$input_file"
+
+    echo "nslookup for all domains completed. Results are saved in: $output_file"
+
+
+
  # Compiling 3rd lvl domains
 
     #echo "[+] Compiling 3rd lvl domains..."
