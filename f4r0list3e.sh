@@ -74,8 +74,11 @@ echo -e "\e[1;32m Welcome to f4r0list3r - Make Your Recon Faster & Easy!\e[0m"
     if [ ! -d "$url" ];then
         mkdir $url
     fi
-    if [ ! -d "$url/recon" ];then
+    if [ ! -d "$url/recon" ];then $url/Subdomains/
         mkdir $url/recon
+    fi
+    if [ ! -d "$url/recon/Subdomains/" ];then 
+        mkdir $url/recon/Subdomains/
     fi
     if [ ! -d "$url/recon/3rd-lvls" ];then
         mkdir $url/recon/3rd-lvls
@@ -117,21 +120,20 @@ echo -e "\e[1;32m Welcome to f4r0list3r - Make Your Recon Faster & Easy!\e[0m"
     
  # Harvesting subdomains (assetfinder & Sublist3r & subfinder & Crt.sh & amass)
 
-    
-    echo -e "\e[1;33m[++] Harvesting subdomains with assetfinder...\e[0m"
-    assetfinder --subs-only $url  >> $url/recon/final1.txt
+    echo "$YELLOW[+] Harvesting subdomains with assetfinder...$RESET"
+    assetfinder --subs-only $url >> $url/recon/Subdomains/assetfinder.txt
 
-    echo -e "\e[1;33m[++] Harvesting subdomains with Sublist3r...\e[0m"
-    sublist3r  -d $url >> $url/recon/final1.txt
+    echo "$YELLOW[+] Harvesting subdomains with Sublist3r...$RESET"
+    sublist3r  -d $url  >> $url/recon/Subdomains/sublist3r.txt
 
-    echo -e "\e[1;33m[++] Harvesting subdomains with subfinder...\e[0m"
-    subfinder -d $url  >> $url/recon/final1.txt
+    echo "$YELLOW[+] Harvesting subdomains with subfinder...$RESET"
+    subfinder -d $url  >> $url/recon/Subdomains/subfinder.txt
     
-    echo -e "\e[1;33m[++] Double checking for subdomains with Amass an& Crt.sh ...\e[0m"
-    #amass enum -d $url | tee -a $url/recon/final1.txt
-    curl -s https://crt.sh/\?q\=%25.$url\&output\=json | jq -r '.[].name_value' | sed 's/\*\.//g'  >> $url/recon/final1.txt
-    sort -u $url/recon/final1.txt >> $url/recon/final.txt
-    rm $url/recon/final1.txt
+    echo "$YELLOW[+] Double checking for subdomains with amass and Crt.sh ...$RESET"
+    #amass enum -passive -d $url | tee -a $url/Subdomains/amass.txt
+    curl -s https://crt.sh/\?q\=%25.$url\&output\=json | jq -r '.[].name_value' | sed 's/\*\.//g' | sort -u >> $url/Subdomains/crt.txt
+    # sort -u $url/recon/final1.txt >> $url/recon/final.txt
+    cat $url/recon/Subdomains/assetfinder.txt $url/recon/Subdomains/sublist3r.txt $url/recon/Subdomains/subfinder.txt $url/recon/Subdomains/crt.txt | anew $url/Subdomains/final.txt
     
  # Compiling 3rd lvl domains
 
