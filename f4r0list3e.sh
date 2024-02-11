@@ -14,7 +14,7 @@ cat << "EOF"
              ░  ░   ░         ░ ░      ░  ░ ░        ░              ░  ░   ░        
 EOF
 echo -e "\e[0m"
-echo -e "\e[1;32m Welcome to f4r0list3r - Make Your Recon Faster & Easy!\e[0m"
+echo -e "\e[1;32m Welcome to f4r0list3r - Make Your Recon Faster & Easy!🔍🔍🔍 \e[0m"
 #    https://github.com/zan8in/afrog/
 #    https://github.com/tomnomnom/assetfinder
 #    https://github.com/owasp-amass/amass
