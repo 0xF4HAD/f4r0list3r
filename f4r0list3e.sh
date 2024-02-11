@@ -130,12 +130,15 @@ echo -e "\e[1;32m Welcome to f4r0list3r - Make Your Recon Faster & Easy!\e[0m"
 
     echo -e "$YELLOW[+] Harvesting subdomains with subfinder...$RESET"
     subfinder -d $url  >> $url/recon/Subdomains/subfinder.txt
+
+    echo "$YELLOW[+] Harvesting subdomains with Findomain...$RESET"
+    findomain -t $url  -u $url/recon/Subdomains/findomain.txt
     
     echo -e "$YELLOW[+] Double checking for subdomains with amass and Crt.sh ...$RESET"
     #amass enum -passive -d $url | tee -a $url/Subdomains/amass.txt
     curl -s https://crt.sh/\?q\=%25.$url\&output\=json | jq -r '.[].name_value' | sed 's/\*\.//g' | sort -u >> $url/recon/Subdomains/crt.txt
     # sort -u $url/recon/final1.txt >> $url/recon/final.txt
-    cat $url/recon/Subdomains/assetfinder.txt $url/recon/Subdomains/sublist3r.txt $url/recon/Subdomains/subfinder.txt $url/recon/Subdomains/crt.txt | anew $url/recon/Subdomains/final.txt
+    cat $url/recon/Subdomains/assetfinder.txt $url/recon/Subdomains/sublist3r.txt $url/recon/Subdomains/subfinder.txt $url/recon/Subdomains/crt.txt $url/recon/Subdomains/findomain.txt | anew $url/recon/Subdomains/final.txt
     
 # Searching for CNAME Records with nslookup 
     echo -e "$YELLOW[+] Searching for CNAME Records With nslookup ...$RESET"
@@ -226,7 +229,7 @@ echo -e "\e[1;32m Welcome to f4r0list3r - Make Your Recon Faster & Easy!\e[0m"
  # Scraping wayback data
 
     echo -e "\e[1;33m[++] Scraping wayback data...\e[0m"
-    cat $url/recon/final.txt | waybackurls | tee -a  $url/recon/wayback/wayback_output1.txt
+    cat $url/recon/Subdomains/final.txt | waybackurls | tee -a  $url/recon/wayback/wayback_output1.txt
     sort -u $url/recon/wayback/wayback_output1.txt >> $url/recon/wayback/wayback_output.txt
     rm $url/recon/wayback/wayback_output1.txt
     
@@ -282,8 +285,8 @@ echo -e "\e[1;32m Welcome to f4r0list3r - Make Your Recon Faster & Easy!\e[0m"
 
 # Checking for vulnerabilitys on alive subdomains (afrog)
 
-    echo -e "\e[1;33m[++] Checking for vulnerabilitys on alive subdomains ...\e[0m"
-    if [ ! -f "$url/recon/VulnScan" ];then
-        touch $url/recon/VulnScan/vulnscan_domains.txt
-    fi
-    afrog -T $url/recon/httprobe/alive.txt -S high,critical   >> $url/recon/VulnScan/vulnscan_domains.txt
+    # echo -e "\e[1;33m[++] Checking for vulnerabilitys on alive subdomains ...\e[0m"
+    # if [ ! -f "$url/recon/VulnScan" ];then
+    #     touch $url/recon/VulnScan/vulnscan_domains.txt
+    # fi
+    # afrog -T $url/recon/httprobe/alive.txt -S high,critical   >> $url/recon/VulnScan/vulnscan_domains.txt
