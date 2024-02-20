@@ -122,17 +122,17 @@ echo -e "\e[1;32m Welcome to f4r0list3r - Make Your Recon Faster & Easy!🔍🔍
     
  # Harvesting subdomains (assetfinder & Sublist3r & subfinder & Crt.sh & amass)
 
-    echo -e "$YELLOW[+] Harvesting subdomains with assetfinder...$RESET"
-    assetfinder --subs-only $url >> $url/recon/Subdomains/assetfinder.txt
+    echo "$YELLOW[+] Harvesting subdomains with assetfinder...$RESET"
+    assetfinder --subs-only $url > $url/Subdomains/assetfinder.txt
 
-    echo -e "$YELLOW[+] Harvesting subdomains with Sublist3r...$RESET"
-    sublist3r  -d $url  >> $url/recon/Subdomains/sublist3r.txt
+    echo "$YELLOW[+] Harvesting subdomains with Sublist3r...$RESET"
+    sublist3r  -d $url -o  $url/Subdomains/sublist3r.txt
 
-    echo -e "$YELLOW[+] Harvesting subdomains with subfinder...$RESET"
-    subfinder -d $url  >> $url/recon/Subdomains/subfinder.txt
+    echo "$YELLOW[+] Harvesting subdomains with subfinder...$RESET"
+    subfinder -d $url  > $url/Subdomains/subfinder.txt
 
     echo "$YELLOW[+] Harvesting subdomains with Findomain...$RESET"
-    findomain -t $url  -u $url/recon/Subdomains/findomain.txt
+    findomain -t $url  -u $url/Subdomains/findomain.txt
     
     echo -e "$YELLOW[+] Double checking for subdomains with amass and Crt.sh ...$RESET"
     #amass enum -passive -d $url | tee -a $url/Subdomains/amass.txt
