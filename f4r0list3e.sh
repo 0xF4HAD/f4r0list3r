@@ -122,7 +122,7 @@ echo -e "\e[1;32m Welcome to f4r0list3r - Make Your Recon Faster & Easy!🔍🔍
     
  # Harvesting subdomains (assetfinder & Sublist3r & subfinder & Crt.sh & amass)
 
-    echo "$YELLOW[+] Harvesting subdomains with assetfinder...$RESET"
+     echo "$YELLOW[+] Harvesting subdomains with assetfinder...$RESET"
     assetfinder --subs-only $url > $url/Subdomains/assetfinder.txt
 
     echo "$YELLOW[+] Harvesting subdomains with Sublist3r...$RESET"
@@ -133,12 +133,14 @@ echo -e "\e[1;32m Welcome to f4r0list3r - Make Your Recon Faster & Easy!🔍🔍
 
     echo "$YELLOW[+] Harvesting subdomains with Findomain...$RESET"
     findomain -t $url  -u $url/Subdomains/findomain.txt
+
+    echo "$YELLOW[+] Harvesting subdomains From Github ...$RESET"
+    github-subdomains -d $url -o $url/Subdomains/githubsubdomain.txt
     
-    echo -e "$YELLOW[+] Double checking for subdomains with amass and Crt.sh ...$RESET"
+    echo "$YELLOW[+] Double checking for subdomains with amass and Crt.sh ...$RESET"
     #amass enum -passive -d $url | tee -a $url/Subdomains/amass.txt
-    curl -s https://crt.sh/\?q\=%25.$url\&output\=json | jq -r '.[].name_value' | sed 's/\*\.//g' | sort -u >> $url/recon/Subdomains/crt.txt
-    # sort -u $url/recon/final1.txt >> $url/recon/final.txt
-    cat $url/recon/Subdomains/assetfinder.txt $url/recon/Subdomains/sublist3r.txt $url/recon/Subdomains/subfinder.txt $url/recon/Subdomains/crt.txt $url/recon/Subdomains/findomain.txt | anew $url/recon/Subdomains/final.txt
+    curl -s https://crt.sh/\?q\=%25.$url\&output\=json | jq -r '.[].name_value' | sed 's/\*\.//g' | sort -u >> $url/Subdomains/crt.txt
+    cat $url/Subdomains/assetfinder.txt  $url/Subdomains/sublist3r.txt $url/Subdomains/subfinder.txt $url/Subdomains/crt.txt $url/Subdomains/findomain.txt $url/Subdomains/githubsubdomain.txt | anew $url/Subdomains/final.txt
     
 # Searching for CNAME Records with nslookup 
     echo -e "$YELLOW[+] Searching for CNAME Records With nslookup ...$RESET"
@@ -183,7 +185,7 @@ echo -e "\e[1;32m Welcome to f4r0list3r - Make Your Recon Faster & Easy!🔍🔍
 
     echo -e "\e[1;33m[++] Probing for alive domains...\e[0m"
     cat $url/recon/Subdomains/final.txt | sort -u | httprobe -s -p https:443 | sed 's~https\?://~~; s~:443~~'  >> $url/recon/httprobe/alive.txt
-    cat $url/recon/Subdomains/final.txt | httpx -mc 200 | sort -u  >> $url/recon/httprobe/alive.txt
+    cat $url/recon/Subdomains/final.txt | httpx -mc 200 | sort -u  >> v
 
 # Probing for alive domains
 
