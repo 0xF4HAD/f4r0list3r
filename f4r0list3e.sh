@@ -26,6 +26,7 @@ echo -e "\e[1;32m Welcome to f4r0list3r - Make Your Recon Faster & Easy!🔍🔍
 #    https://github.com/devanshbatham/ParamSpider
 #    https://github.com/Emoe/kxss
 #    https://github.com/projectdiscovery/httpx?tab=readme-ov-file
+#    https://github.com/lc/subjs
 
 
   
@@ -82,6 +83,9 @@ echo -e "\e[1;32m Welcome to f4r0list3r - Make Your Recon Faster & Easy!🔍🔍
     if [ ! -d "$url/recon/Subdomains/" ];then 
         mkdir $url/recon/Subdomains/
     fi
+    if [ ! -d "$url/recon/Subdomains/js" ];then 
+        mkdir $url/recon/Subdomains/js
+    fi
     if [ ! -d "$url/recon/3rd-lvls" ];then
         mkdir $url/recon/3rd-lvls
     fi
@@ -109,38 +113,38 @@ echo -e "\e[1;32m Welcome to f4r0list3r - Make Your Recon Faster & Easy!🔍🔍
     if [ ! -d "$url/recon/VulnScan" ];then
         mkdir $url/recon/VulnScan
     fi
-    if [ ! -f "$url/recon/httprobe/alive.txt" ];then
-        touch $url/recon/httprobe/alive.txt
-    fi
-    if [ ! -f "$url/recon/final.txt" ];then
-        touch $url/recon/final.txt
-    fi
-    if [ ! -f "$url/recon/3rd-lvl" ];then
-        touch $url/recon/3rd-lvl-domains.txt
-    fi
+    # if [ ! -f "$url/recon/httprobe/alive.txt" ];then
+    #     touch $url/recon/httprobe/alive.txt
+    # fi
+    # if [ ! -f "$url/recon/final.txt" ];then
+    #     touch $url/recon/final.txt
+    # fi
+    # if [ ! -f "$url/recon/3rd-lvl" ];then
+    #     touch $url/recon/3rd-lvl-domains.txt
+    # fi
     
     
  # Harvesting subdomains (assetfinder & Sublist3r & subfinder & Crt.sh & amass)
 
      echo "$YELLOW[+] Harvesting subdomains with assetfinder...$RESET"
-    assetfinder --subs-only $url > $url/Subdomains/assetfinder.txt
+    assetfinder --subs-only $url > $url/recon//Subdomains/assetfinder.txt
 
     echo "$YELLOW[+] Harvesting subdomains with Sublist3r...$RESET"
-    sublist3r  -d $url -o  $url/Subdomains/sublist3r.txt
+    sublist3r  -d $url -o  $url/recon/Subdomains/sublist3r.txt
 
     echo "$YELLOW[+] Harvesting subdomains with subfinder...$RESET"
-    subfinder -d $url  > $url/Subdomains/subfinder.txt
+    subfinder -d $url  > $url/recon/Subdomains/subfinder.txt
 
     echo "$YELLOW[+] Harvesting subdomains with Findomain...$RESET"
-    findomain -t $url  -u $url/Subdomains/findomain.txt
+    findomain -t $url  -u $url/recon/Subdomains/findomain.txt
 
     echo "$YELLOW[+] Harvesting subdomains From Github ...$RESET"
-    github-subdomains -d $url -o $url/Subdomains/githubsubdomain.txt
+    github-subdomains -d $url -o $url/recon/Subdomains/githubsubdomain.txt
     
     echo "$YELLOW[+] Double checking for subdomains with amass and Crt.sh ...$RESET"
     #amass enum -passive -d $url | tee -a $url/Subdomains/amass.txt
-    curl -s https://crt.sh/\?q\=%25.$url\&output\=json | jq -r '.[].name_value' | sed 's/\*\.//g' | sort -u >> $url/Subdomains/crt.txt
-    cat $url/Subdomains/assetfinder.txt  $url/Subdomains/sublist3r.txt $url/Subdomains/subfinder.txt $url/Subdomains/crt.txt $url/Subdomains/findomain.txt $url/Subdomains/githubsubdomain.txt | anew $url/Subdomains/final.txt
+    curl -s https://crt.sh/\?q\=%25.$url\&output\=json | jq -r '.[].name_value' | sed 's/\*\.//g' | sort -u >> $url/recon/Subdomains/crt.txt
+    cat $url/recon/Subdomains/assetfinder.txt  $url/recon/Subdomains/sublist3r.txt $url/recon/Subdomains/subfinder.txt $url/recon/Subdomains/crt.txt $url/recon/Subdomains/findomain.txt $url/recon/Subdomains/githubsubdomain.txt | anew $url/recon/Subdomains/final.txt
     
 # Searching for CNAME Records with nslookup 
     echo -e "$YELLOW[+] Searching for CNAME Records With nslookup ...$RESET"
@@ -277,6 +281,14 @@ echo -e "\e[1;32m Welcome to f4r0list3r - Make Your Recon Faster & Easy!🔍🔍
     gau $url --subs --fc 404 --providers wayback   >> $url/recon/gau_urls.txt
     cat $url/recon/gau_urls.txt | grep $1 >> $url/recon/gau_urlsfinal.txt
     rm $url/recon/gau_urls.txt
+
+# Harvesting  JavaScript file 
+    echo -e "\e[1;33m[++] Harvesting JavaScript File with Gau|Katana|waybackurls|subjs ...\e[0m"
+    cat $url/recon/Subdomains/final.txt | katana | grep js | httpx -mc 200 | tee $url/recon/Subdomains/js/js.txt
+    gau --subs $url | grep '.js$' >> $url/recon/Subdomains/js/gaujs.txt
+    waybackurls $url | grep '.js$' >> $url/recon/Subdomains/js/waybackjs.txt
+    subfinder -d $url -silent | httpx | subjs >> $url/recon/Subdomains/js/subjs.txt
+    cat $url/recon/Subdomains/js/js.txt $url/recon/Subdomains/js/gaujs.txt $url/recon/Subdomains/js/waybackjs.txt $url/recon/Subdomains/js/subjs.txt  | sort -u >> $url/recon/Subdomains/js/finaljs.txt
 
 # Eyewitness 
 
